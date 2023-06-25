@@ -3,6 +3,8 @@
 
 # Log file
 *.log
+nb-configuration.xml
+nbactions-release-profile.xml
 
 # BlueJ files
 *.ctxt
@@ -10,8 +12,10 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-folders
-/idea
+#folders
+/.idea
+/.eclipse
+/.metadata
 /target
 /nbproject
 

@@ -4,20 +4,23 @@
  * contato@margay.com.br
  * (93)99155-3577
  */
-
 package com.margay.br.keys.generate;
 
 import java.io.IOException;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperty;
+import java.nio.file.Files;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import static java.nio.file.Paths.get;
 import java.security.NoSuchAlgorithmException;
 import static java.security.SecureRandom.getInstanceStrong;
+import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
+import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 public class KeyGenerate {
@@ -58,7 +61,9 @@ public class KeyGenerate {
 
     public static String readData() {
         try {
-            return readAllLines(homePath("readFile.sys")).get(0);
+            var path = homePath("readFile.sys");
+            createFile(path);
+            return readAllLines(path).get(0);
         } catch (IOException var1) {
             getLogger(KeyGenerate.class.getName()).log(SEVERE, (String) null, var1);
             throw new ExceptionInInitializerError("Erro ao inicializar leitura do arquivo");
@@ -72,7 +77,18 @@ public class KeyGenerate {
             return readAllLines(path).get(0);
         } catch (IOException var3) {
             getLogger(KeyGenerate.class.getName()).log(SEVERE, (String) null, var3);
-            throw new ExceptionInInitializerError("Erro ao inicializar gravação do arquivo");
+            return null;
+        }
+    }
+
+    private static void createFile(Path path) {
+        try {
+            if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+                Files.createFile(path);
+                write(path, "000000".getBytes());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(KeyGenerate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -95,7 +111,7 @@ public class KeyGenerate {
             return token.toString();
         } catch (NoSuchAlgorithmException var6) {
             getLogger(KeyGenerate.class.getName()).log(SEVERE, (String) null, var6);
-            throw new IllegalArgumentException("Erro ao gerar chave");
+            return null;
         }
     }
 }
